@@ -1,6 +1,6 @@
 ************** CUSTOM SCROLLBAR *********
 
-IN THIS SCROLLBAR , YOU WILL FIND 5 TYPE OF SCENARIOS FOR SCROLLBAR, PLEASE CHECK BELOW EXAMPLE AND FOLLOW BASIC POINTS :-
+IN THIS SCROLLBAR , YOU WILL FIND FOUR TYPE OF SCENARIOS FOR SCROLLBAR, PLEASE CHECK BELOW EXAMPLE AND FOLLOW BASIC POINTS :-
 
 
 *****************BASIC POINTS*********
@@ -27,12 +27,5 @@ $('.scrollbar3').scrollbar({
 });
 
 
-// Example without both side scrollbar
-$('.scrollbar4').scrollbar({
-    verticalScrollbar:false,
-    horizontalScrollbar:false
-});
-
-
-// Example with horizontal and vertical scrollbar when content is less then height or width (Means scrollbar will not display)
-$('.scrollbar5').scrollbar();
+// Example with horizontal and vertical scrollbar when content is less then height or width (Means scrollbar will display like overflow:auto)
+$('.scrollbar4').scrollbar();

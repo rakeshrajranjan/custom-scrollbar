@@ -10,11 +10,6 @@ $(document).ready(function(){
         horizontalScrollbar:false
     });
 
-    $('.scrollbar4').scrollbar({ // Example without both side scrollbar
-        verticalScrollbar:false,
-        horizontalScrollbar:false
-    });
-
-    $('.scrollbar5').scrollbar(); // Example with horizontal and vertical scrollbar when content is less then height or width (Means scrollbar will not display)
+    $('.scrollbar4').scrollbar(); // Example with horizontal and vertical scrollbar when content is less then height or width (Means scrollbar will display like overflow:auto)
 
 })

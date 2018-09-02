@@ -1,0 +1,185 @@
+/* Scrollbar*/
+
+.customScrollbar{
+	max-width: 1000px;
+	max-height:none !important;
+	padding:0 !important;
+	position:relative !important;
+	overflow:hidden !important;
+}
+.customScrollbar *{
+	vertical-align: top;
+	box-sizing: border-box !important;
+}
+.scrollbarPanelContainer,
+.scrollbarContent{
+	transition-timing-function: linear !important;
+}
+.customScrollbar .scrollbarContent{
+	font-size: 16px;
+}
+.scrollbarMainContainer,
+.scrollbarPanelMainContainer {
+	position: relative;
+}
+.scrollbarContent{
+	position: relative;
+	display: table;
+	padding: 5px;
+	text-align: justify;
+}
+.scrollbarArrowTop,
+.scrollbarArrowBottom{
+	height: 20px;
+	position: relative;
+	cursor: pointer;
+}
+.scrollbarArrowLeft,
+.scrollbarArrowRight{
+	width: 20px;
+	position: relative;
+	display: block;
+	height: 100%;
+	float: left;
+	cursor: pointer;
+}
+.scrollbarVertical,
+.scrollbarHorizontal{
+	position: absolute;
+    background: #fff;
+    border-radius: 0;
+	z-index: 1;
+}
+.scrollbarVertical:before,
+.scrollbarHorizontal:before{
+	content:"";
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+    border: 1px solid #c8c8c8;
+	display: block;
+    background: #e7e7e7;
+    border-radius: 50px;
+	box-shadow:inset 1px 10px 10px #d1d1d1;
+	box-sizing: border-box;
+}
+.scrollbarVertical{
+	width: 20px;
+	height: 100%;
+	top:0;
+	right:0;
+	display: flex;
+    flex-direction: column;
+}
+.scrollbarHorizontal{
+	height: 20px;
+	width: 100%;
+	bottom:0;
+	left:0;
+	display: flex;
+    flex-direction: row;
+}
+.scrollbarPanelHorizontal{
+	display: block;
+	float: left;
+	height: 100%;
+}
+.scrollbarArrowTop:before,
+.scrollbarArrowBottom:before,
+.scrollbarArrowLeft:before,
+.scrollbarArrowRight:before{
+	font-size: 20px;
+	position: absolute;
+	color: #fff;
+}
+.scrollbarArrowTop:before{
+	content:"\25B4";
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.scrollbarArrowBottom:before{
+	content:"\25BE";
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.scrollbarArrowLeft:before{
+	content:"\25C2";
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.scrollbarArrowRight:before{
+	content:"\25B8";
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.sidebarActive{
+	position: absolute;
+    background: #fff;
+	display: none;
+	bottom:0;
+	right:0;
+	z-index: 9;
+}
+.sidebarActive:after{
+	font-size: 20px;
+	content:"\25C7";
+	display: block;
+	top: 50%;
+	left:50%;
+	position: absolute;
+	transform: translate(-50%,-50%);
+	color: #88c3f1;
+}
+.scrollbarPanel{
+	background:#fff;
+}
+.scrollbarPanelTop,
+.scrollbarPanelBottom{
+	height:1px;
+	flex: 1 1 10px;
+}
+.scrollbarPanelLeft,
+.scrollbarPanelRight{
+	width: 10px;
+	flex: 1 1 10px;
+}
+.scrollbarPanelMiddle,
+.scrollbarPanelCenter{
+    background: transparent;
+}
+.scrollbarPanelContainer {
+    background: linear-gradient(#b7daf5,#88c3f1);
+    border: 1px solid #8eb9dd;
+    border-radius: 50px;
+    overflow: hidden;
+}
+.scrollbarPanelVertical .scrollbarPanelContainer{
+	width: 100%;
+	position: relative;
+	display: flex;
+    flex-direction: column;
+}
+.scrollbarPanelHorizontal .scrollbarPanelContainer{
+	height: 100%;
+	display: flex;
+    position: relative;
+    flex-direction: row;
+}
+.scrollbarPanelVertical .scrollbarPanel{	
+	width: 100%;
+}
+.scrollbarPanelHorizontal .scrollbarPanel{
+	height: 100%;
+}
+.scrollbarPanelHorizontal .scrollbarPanelCenter{
+	flex: 1 1 calc(100% - 20px);
+}
+.scrollbarPanelVertical .scrollbarPanelMiddle{
+	flex: 1 1 calc(100% - 20px);
+}

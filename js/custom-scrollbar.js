@@ -15,7 +15,6 @@ $.fn.scrollbar = function(attributes){
 	contentAreaScrollPositionTop=0,
 	contentAreaScrollPositionLeft=0,
 	currentVerticalScrollPointer = 0,
-	increseSpeed = 10,
 	currentHorizontalScrollPointer=0,
 	animationSpeed = 0.2;
 	$(scrollbarContent).css({"left":"0","top":"0"});
@@ -80,11 +79,11 @@ $.fn.scrollbar = function(attributes){
 		selector.find('.scrollbarPanelHorizontal').css({"width":horizontalScrollAreaFullWidth});
 
 		// Vertical scrollbar height
-		verticalScrollbarHeight= selectorHeight-verticalScrollAreaFullHeight;
+		verticalScrollbarHeight= (selectorHeight/fullContentHeight)*selectorHeight;
 		selector.find('.scrollbarPanelContainerVertical').css({'height':verticalScrollbarHeight+"px"});
 
 		// Horizontal scrollbar width
-		horizontalScrollbarWidth= selectorWidth-horizontalScrollAreaFullWidth;
+		horizontalScrollbarWidth= (selectorWidth/fullContentWidth)*selectorWidth;
 		selector.find('.scrollbarPanelContainerHorizontal').css({'width':horizontalScrollbarWidth+"px"});
 
 		// Actual height and width of scrollarea
@@ -105,22 +104,28 @@ $.fn.scrollbar = function(attributes){
 		currentVerticalScrollPointer = -(yOnResize/heightOnResize * (scrollbarVertical.parentElement.offsetHeight-scrollbarVertical.offsetHeight));
 		moveAt(currentHorizontalScrollPointer, currentVerticalScrollPointer);
 	});
+	function eventDefault(){
+		return (event !== undefined && event.cancelable)?event.preventDefault():null;
+	}
 	function returnBack(){
+		if(isScrolling){
+			return true;
+		}
 		if(options.verticalScrollbar==false){
-			if(event !== undefined && !event.ctrlKey){
-				return;
+			if(event !== undefined && !isVerticalSlide){
+				return true;
 			}
 		}
 		if(options.horizontalScrollbar==false){
-			if(event !== undefined && event.ctrlKey){
-				return;
+			if(event !== undefined && event.ctrlKey) {
+				return true;
 			}
 		}
-		if(event !== undefined && event.cancelable)
-		event.preventDefault();
+		return eventDefault();
 	}
+
 	function moveAt(currentHorizontalScrollPointer, currentVerticalScrollPointer) {
-		returnBack();
+		if(returnBack()==true){ return }else{ returnBack()};
 		scrollbarContent.style.left = currentHorizontalScrollPointer*widthScrollRatio + 'px';
 		scrollbarContent.style.top = currentVerticalScrollPointer*heightScrollRatio + 'px';
 		scrollbarHorizontal.style.left = -currentHorizontalScrollPointer + 'px';
@@ -152,18 +157,15 @@ $.fn.scrollbar = function(attributes){
 		var startTime = new Date().getTime();
 		
 		function scrollbarArrowControllerMain(){
-			if (!$(event.target).parents(scrollbarContent).length || isScrolling) {//Return if click on child
-				return;
-			}
 			getPointer();
 			if(scrollbarArrow[i].classList.contains('scrollbarArrowTop')){
-				currentVerticalScrollPointer+=selectorHeight/heightScrollRatio/increseSpeed;
+				currentVerticalScrollPointer+=selectorHeight/heightScrollRatio;
 			}else if(scrollbarArrow[i].classList.contains('scrollbarArrowBottom')){
-				currentVerticalScrollPointer-=selectorHeight/heightScrollRatio/increseSpeed;
+				currentVerticalScrollPointer-=selectorHeight/heightScrollRatio;
 			}else if(scrollbarArrow[i].classList.contains('scrollbarArrowLeft')){
-				currentHorizontalScrollPointer +=selectorWidth/widthScrollRatio/increseSpeed;
+				currentHorizontalScrollPointer +=selectorWidth/widthScrollRatio;
 			}else if(scrollbarArrow[i].classList.contains('scrollbarArrowRight')){
-				currentHorizontalScrollPointer -=selectorWidth/widthScrollRatio/increseSpeed;
+				currentHorizontalScrollPointer -=selectorWidth/widthScrollRatio;
 			}
 			if(currentHorizontalScrollPointer>0){
 				currentHorizontalScrollPointer=0;
@@ -227,9 +229,9 @@ $.fn.scrollbar = function(attributes){
 
 	// Event on middle bar
 	function middleBarClick(event,i){
-		if (scrollbarPanelMainContainer[i] !== event.target || isScrolling) {//Return if click on child
-			return;
-		}
+		//Return if click on child
+		if (scrollbarPanelMainContainer[i] !== event.target || isScrolling)
+		return;
 		getPointer();
 		var mouseAndTouchDownY=0,mouseAndTouchDownX=0,parentX=0,parentY=0;
 		if($(scrollbarPanelMainContainer[i]).hasParent(".scrollbarHorizontal")){
@@ -269,22 +271,21 @@ $.fn.scrollbar = function(attributes){
 	
 	// Mouse wheel event
 	function scrollbarContentMouseWheel(event){
-		if (!$(event.target).parents(scrollbarContent).length || isScrolling) {//Return if click on child
-			return;
-		}
+		(event.ctrlKey)?isVerticalSlide = true:isVerticalSlide = false;
+
 		getPointer();
 		var mouseWheelUp = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
 		if(mouseWheelUp > 0){
 			if(!event.ctrlKey){
-				currentVerticalScrollPointer+=selectorHeight/heightScrollRatio/increseSpeed;
+				currentVerticalScrollPointer+=selectorHeight/heightScrollRatio;
 			}else{
-				currentHorizontalScrollPointer +=selectorWidth/widthScrollRatio/increseSpeed;
+				currentHorizontalScrollPointer +=selectorWidth/widthScrollRatio;
 			}
 		}else{
 			if(!event.ctrlKey){
-				currentVerticalScrollPointer-=selectorHeight/heightScrollRatio/increseSpeed;
+				currentVerticalScrollPointer-=selectorHeight/heightScrollRatio;
 			}else{
-				currentHorizontalScrollPointer -=selectorWidth/widthScrollRatio/increseSpeed;
+				currentHorizontalScrollPointer -=selectorWidth/widthScrollRatio;
 			}
 		}
 		if(currentHorizontalScrollPointer>0){
@@ -306,11 +307,10 @@ $.fn.scrollbar = function(attributes){
 		scrollbarContentMouseWheel(event);
 	});
 
+
+
 	// Event on middle bar small button
 	function scrollbarController(event,i){
-		if (!$(event.target).parents(scrollbarContent).length || isScrolling) {//Return if click on child
-			return;
-		}
 		if(event !== undefined && event.cancelable)
 		event.preventDefault();
 		getPointer();
@@ -361,19 +361,13 @@ $.fn.scrollbar = function(attributes){
 	
 	// Middle content touch move and mouse move
 	function scrollbarContentController(event){
-		if (!$(event.target).parents(scrollbarContent).length || isScrolling) {//Return if click on child
-			return;
-		}
-		returnBack();
 		getPointer();
 		var parentX = scrollbarContent.parentElement.getBoundingClientRect().left;
 		var parentY = scrollbarContent.parentElement.getBoundingClientRect().top;
 		var mouseAndTouchUpAxisXInParent = pointerX(event) - scrollbarContent.getBoundingClientRect().left;
 		var mouseAndTouchUpAxisYInParent = pointerY(event) - scrollbarContent.getBoundingClientRect().top;
 		function moveAtMiddle(currentHorizontalScrollPointer, currentVerticalScrollPointer) {
-			if (!$(event.target).parents(scrollbarContent).length || isScrolling) {//Return if click on child
-				return;
-			}
+			if(returnBack()==true){ return }else{ returnBack()};
 			if(options.horizontalScrollbar!=false) {
 			scrollbarContent.style.left = currentHorizontalScrollPointer - (mouseAndTouchUpAxisXInParent+parentX) + 'px';
 			scrollbarHorizontal.style.left = -(currentHorizontalScrollPointer - (mouseAndTouchUpAxisXInParent+parentX))/widthScrollRatio + 'px';
@@ -391,6 +385,7 @@ $.fn.scrollbar = function(attributes){
 			var mouseAndTouchMoveAxisYInParent = pointerY(event);
 			var maxScrollableWidthArea = mouseAndTouchMoveAxisXInParent - mouseAndTouchUpAxisXInParent - parentX;
 			var maxScrollableHeightArea = mouseAndTouchMoveAxisYInParent - mouseAndTouchUpAxisYInParent - parentY;
+			
 			if(maxScrollableWidthArea<selectorWidth-fullContentWidth){
 				mouseAndTouchMoveAxisXInParent = mouseAndTouchUpAxisXInParent + selectorWidth-fullContentWidth+parentX;
 			}
@@ -410,16 +405,26 @@ $.fn.scrollbar = function(attributes){
 			scrollbarContent.removeEventListener(hasTouchDevice?"touchmove":"mousemove", onUserDoMove);
 		}
 	};
-	// Middle content click event
+	// Middle content event
 	scrollbarContent.addEventListener(hasTouchDevice?"touchstart":"mousedown", function(event) {
 		scrollbarContentController(event)
 	});
 	scrollbarContent.ondragstart = function() {return false;};
 
-
-	// when window scroll stop 
-	var isScrolling=false,isScrollingTimeout;;
-	window.addEventListener('scroll', function ( event ) {
+	// when window scroll 
+	var windowScrollX=0,isVerticalSlide=false,isScrolling=false,isScrollingTimeout;
+	window.addEventListener("touchstart",function(event){
+		windowScrollX = pointerX(event);
+	});
+	window.addEventListener("touchmove",function(event){
+		var currentWindowScrollX = pointerX(event);
+		if(Math.abs(currentWindowScrollX-windowScrollX)>10)
+		isVerticalSlide = true;
+	});
+	window.addEventListener("touchend",function(event){
+		isVerticalSlide = false;
+	});
+	window.addEventListener("scroll", function ( event ) {
 		isScrolling=true;
 		window.clearTimeout( isScrollingTimeout );
 		isScrollingTimeout = setTimeout(function() {
